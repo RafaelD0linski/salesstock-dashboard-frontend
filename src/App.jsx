@@ -2,9 +2,6 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Sidebar from "./components/Sidebar";
 import Header from "./components/Header";
 import Dashboard from "./pages/Dashboard";
-import Produtos from "./pages/Produtos";
-import Clientes from "./pages/Clientes";
-import Vendas from "./pages/Vendas";
 
 function App() {
   return (
@@ -16,9 +13,6 @@ function App() {
           <main className="bg-gray-100 min-h-screen">
             <Routes>
               <Route path="/" element={<Dashboard />} />
-              <Route path="/produtos" element={<Produtos />} />
-              <Route path="/clientes" element={<Clientes />} />
-              <Route path="/vendas" element={<Vendas />} />
             </Routes>
           </main>
         </div>
