@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "http://localhost:5000/api", // mesmo endereço que aparece no terminal do .NET
+  baseURL: "http://localhost:5000", // sem o /api
 });
 
 export default api;
