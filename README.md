@@ -1,70 +1,185 @@
-# Getting Started with Create React App
+# 💻 SalesStock Dashboard + API (.NET)
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Projeto completo composto por **SalesStockAPI** (backend em .NET + PostgreSQL) e **SalesStock Dashboard** (frontend em React + TailwindCSS).  
+O objetivo do sistema é gerenciar produtos, clientes e vendas de forma simples e visual, com dashboard dinâmico e API RESTful.
 
-## Available Scripts
+---
 
-In the project directory, you can run:
+## 🧩 1️⃣ SalesStockAPI (.NET + PostgreSQL)
 
-### `npm start`
+### 🚀 Tecnologias Utilizadas
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+- **.NET 8**
+- **ASP.NET Core Web API**
+- **Entity Framework Core**
+- **PostgreSQL (via Docker)**
+- **CORS (Cross-Origin Resource Sharing)**
+- **Render / Docker** (para deploy)
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+### 🧱 Estrutura do Projeto
 
-### `npm test`
+```
+SalesStockAPI/
+│
+├── Domain/
+│   └── Entities/
+│       ├── Produto.cs
+│       ├── Cliente.cs
+│       └── Venda.cs
+│
+├── Infrastructure/
+│   └── Data/
+│       └── SalesStockDbContext.cs
+│
+├── Controllers/
+│   ├── ProdutosController.cs
+│   ├── ClientesController.cs
+│   └── VendasController.cs
+│
+├── appsettings.json
+└── Program.cs
+```
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### 🐳 Configuração do Banco via Docker
 
-### `npm run build`
+```bash
+docker run --name salesstock_db -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=123456 -e POSTGRES_DB=salesstockdb -p 5432:5432 -d postgres:15
+```
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### ⚙️ String de Conexão
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+Arquivo **appsettings.json**:
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+```json
+"ConnectionStrings": {
+  "DefaultConnection": "Host=localhost;Port=5432;Database=salesstockdb;Username=postgres;Password=123456"
+}
+```
 
-### `npm run eject`
+### 🧰 Migrações do Banco
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+```bash
+dotnet ef migrations add InitialCreate
+dotnet ef database update
+```
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+### ▶️ Executando a API
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+```bash
+dotnet run
+```
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+API disponível em **http://localhost:5000**.
 
-## Learn More
+### 🌐 Rotas Principais
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+| Método | Rota      | Descrição      |
+| ------ | --------- | -------------- |
+| GET    | /produtos | Lista produtos |
+| POST   | /produtos | Cria produto   |
+| GET    | /clientes | Lista clientes |
+| POST   | /clientes | Cria cliente   |
+| GET    | /vendas   | Lista vendas   |
+| POST   | /vendas   | Cria venda     |
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+### ☁️ Deploy
 
-### Code Splitting
+Hospedada em **Render**:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+```
+https://salesstockapi.onrender.com
+```
 
-### Analyzing the Bundle Size
+---
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+## 💻 2️⃣ SalesStock Dashboard (React + TailwindCSS)
 
-### Making a Progressive Web App
+### 🚀 Tecnologias Utilizadas
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+- **React + Create React App**
+- **Tailwind CSS**
+- **Axios**
+- **Recharts**
+- **Lucide React (ícones)**
+- **Framer Motion (animações)**
+- **React Router DOM**
 
-### Advanced Configuration
+### ⚙️ Instalação
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+```bash
+git clone https://github.com/RafaelD0linski/salesstock-dashboard-FrontEnd
+cd salesstock-dashboard-FrontEnd
+npm install
+```
 
-### Deployment
+### 🔗 Configuração da API
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+Arquivo **src/api.js**:
 
-### `npm run build` fails to minify
+```js
+import axios from "axios";
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+const api = axios.create({
+  baseURL: "http://localhost:5000", // ou sua URL hospedada
+});
+
+export default api;
+```
+
+### ▶️ Executando o Projeto
+
+```bash
+npm start
+```
+
+Rodará em **http://localhost:3000**.
+
+### 📊 Funcionalidades
+
+- Dashboard com estatísticas em tempo real
+- Gráfico de vendas recentes (Recharts)
+- CRUD de produtos, clientes e vendas
+- Interface moderna e responsiva com TailwindCSS
+- Animações com Framer Motion
+
+### ☁️ Deploy
+
+Frontend hospedado em **Vercel**  
+Exemplo de URL:
+
+```
+https://salesstock-dashboard.vercel.app
+```
+
+### 🧠 Estrutura do Projeto
+
+```
+src/
+├── api.js
+├── pages/
+│   ├── Dashboard.jsx
+│   ├── Produtos.jsx
+│   ├── Clientes.jsx
+│   └── Vendas.jsx
+├── components/
+│   ├── Sidebar.jsx
+│   ├── Header.jsx
+│   └── Card.jsx
+└── App.js
+```
+
+### 📦 Scripts Disponíveis
+
+| Comando         | Descrição                   |
+| --------------- | --------------------------- |
+| `npm start`     | Inicia o app no modo dev    |
+| `npm run build` | Gera build de produção      |
+| `npm test`      | Executa testes              |
+| `npm run eject` | Remove configurações do CRA |
+
+---
+
+## 👨‍💻 Autor
+
+Desenvolvido por **Rafael Dolinski**  
+🔗 [GitHub](https://github.com/RafaelD0linski)
