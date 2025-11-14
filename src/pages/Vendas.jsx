@@ -6,8 +6,8 @@ import { ShoppingCart, Plus, Trash2 } from "lucide-react";
 export default function Vendas() {
   const [vendas, setVendas] = useState([]);
   const [novaVenda, setNovaVenda] = useState({
-    clienteId: "",
-    produtoId: "",
+    cliente: "",
+    produto: "",
     quantidade: 1,
   });
 
@@ -25,9 +25,18 @@ export default function Vendas() {
   }
 
   async function adicionarVenda() {
+    if (!novaVenda.cliente || !novaVenda.produto || !novaVenda.quantidade) {
+      return alert("Preencha todos os campos!");
+    }
+
     try {
-      await api.post("/vendas", novaVenda);
-      setNovaVenda({ clienteId: "", produtoId: "", quantidade: 1 });
+      await api.post("/vendas", {
+        cliente: novaVenda.cliente,
+        produto: novaVenda.produto,
+        quantidade: Number(novaVenda.quantidade),
+      });
+
+      setNovaVenda({ cliente: "", produto: "", quantidade: 1 });
       buscarVendas();
     } catch (error) {
       console.error("Erro ao adicionar venda:", error);
@@ -55,25 +64,28 @@ export default function Vendas() {
         <ShoppingCart className="w-7 h-7 text-blue-600" /> Vendas
       </h1>
 
+      {/* FORM */}
       <div className="flex gap-2 mb-6">
         <input
-          type="number"
-          placeholder="Cliente ID"
-          value={novaVenda.clienteId}
+          type="text"
+          placeholder="Cliente"
+          value={novaVenda.cliente}
           onChange={(e) =>
-            setNovaVenda({ ...novaVenda, clienteId: e.target.value })
+            setNovaVenda({ ...novaVenda, cliente: e.target.value })
           }
           className="border rounded p-2 flex-1"
         />
+
         <input
-          type="number"
-          placeholder="Produto ID"
-          value={novaVenda.produtoId}
+          type="text"
+          placeholder="Produto"
+          value={novaVenda.produto}
           onChange={(e) =>
-            setNovaVenda({ ...novaVenda, produtoId: e.target.value })
+            setNovaVenda({ ...novaVenda, produto: e.target.value })
           }
           className="border rounded p-2 flex-1"
         />
+
         <input
           type="number"
           placeholder="Qtd"
@@ -83,6 +95,7 @@ export default function Vendas() {
           }
           className="border rounded p-2 w-20"
         />
+
         <button
           onClick={adicionarVenda}
           className="bg-blue-600 text-white px-4 py-2 rounded flex items-center gap-2 hover:bg-blue-700"
@@ -91,6 +104,7 @@ export default function Vendas() {
         </button>
       </div>
 
+      {/* LISTA DE VENDAS */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {vendas.map((v) => (
           <motion.div
@@ -100,10 +114,19 @@ export default function Vendas() {
           >
             <div>
               <h2 className="text-lg font-semibold">Venda #{v.id}</h2>
-              <p className="text-gray-500">Cliente: {v.clienteId}</p>
-              <p className="text-gray-500">Produto: {v.produtoId}</p>
+              <p className="text-gray-500">Cliente: {v.cliente}</p>
+              <p className="text-gray-500">Produto: {v.produto}</p>
               <p className="text-gray-500">Qtd: {v.quantidade}</p>
+
+              <p className="text-gray-700 font-semibold mt-1">
+                Total: R$ {v.valorTotal?.toFixed(2)}
+              </p>
+
+              <p className="text-gray-400 text-sm">
+                Data: {new Date(v.dataVenda).toLocaleString()}
+              </p>
             </div>
+
             <button
               onClick={() => excluirVenda(v.id)}
               className="text-red-500 hover:text-red-700"

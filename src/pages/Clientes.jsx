@@ -5,7 +5,13 @@ import { User, Plus, Trash2 } from "lucide-react";
 
 export default function Clientes() {
   const [clientes, setClientes] = useState([]);
-  const [novoCliente, setNovoCliente] = useState({ nome: "", email: "" });
+  const [novoCliente, setNovoCliente] = useState({
+    nome: "",
+    email: "",
+    telefone: "",
+    cpf: "",
+    endereco: "",
+  });
 
   useEffect(() => {
     buscarClientes();
@@ -21,11 +27,24 @@ export default function Clientes() {
   }
 
   async function adicionarCliente() {
-    if (!novoCliente.nome || !novoCliente.email)
+    if (
+      !novoCliente.nome ||
+      !novoCliente.email ||
+      !novoCliente.telefone ||
+      !novoCliente.cpf ||
+      !novoCliente.endereco
+    )
       return alert("Preencha todos os campos!");
+
     try {
       await api.post("/clientes", novoCliente);
-      setNovoCliente({ nome: "", email: "" });
+      setNovoCliente({
+        nome: "",
+        email: "",
+        telefone: "",
+        cpf: "",
+        endereco: "",
+      });
       buscarClientes();
     } catch (error) {
       console.error("Erro ao adicionar cliente:", error);
@@ -53,16 +72,18 @@ export default function Clientes() {
         <User className="w-7 h-7 text-green-600" /> Clientes
       </h1>
 
-      <div className="flex gap-2 mb-6">
+      {/* FORM */}
+      <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-2 mb-6">
         <input
           type="text"
-          placeholder="Nome do cliente"
+          placeholder="Nome"
           value={novoCliente.nome}
           onChange={(e) =>
             setNovoCliente({ ...novoCliente, nome: e.target.value })
           }
-          className="border rounded p-2 flex-1"
+          className="border rounded p-2 w-full"
         />
+
         <input
           type="email"
           placeholder="Email"
@@ -70,16 +91,48 @@ export default function Clientes() {
           onChange={(e) =>
             setNovoCliente({ ...novoCliente, email: e.target.value })
           }
-          className="border rounded p-2 flex-1"
+          className="border rounded p-2 w-full"
         />
+
+        <input
+          type="text"
+          placeholder="Telefone"
+          value={novoCliente.telefone}
+          onChange={(e) =>
+            setNovoCliente({ ...novoCliente, telefone: e.target.value })
+          }
+          className="border rounded p-2 w-full"
+        />
+
+        <input
+          type="text"
+          placeholder="CPF"
+          value={novoCliente.cpf}
+          onChange={(e) =>
+            setNovoCliente({ ...novoCliente, cpf: e.target.value })
+          }
+          className="border rounded p-2 w-full"
+        />
+
+        <input
+          type="text"
+          placeholder="Endereço"
+          value={novoCliente.endereco}
+          onChange={(e) =>
+            setNovoCliente({ ...novoCliente, endereco: e.target.value })
+          }
+          className="border rounded p-2 w-full"
+        />
+
         <button
           onClick={adicionarCliente}
-          className="bg-green-600 text-white px-4 py-2 rounded flex items-center gap-2 hover:bg-green-700"
+          className="bg-green-600 text-white px-4 py-2 rounded flex items-center gap-2 hover:bg-green-700 col-span-1"
         >
           <Plus size={18} /> Adicionar
         </button>
       </div>
 
+      {/* LISTA */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {clientes.map((c) => (
           <motion.div
@@ -90,7 +143,11 @@ export default function Clientes() {
             <div>
               <h2 className="text-lg font-semibold">{c.nome}</h2>
               <p className="text-gray-500">{c.email}</p>
+              <p className="text-gray-500">{c.telefone}</p>
+              <p className="text-gray-500">{c.cpf}</p>
+              <p className="text-gray-500">{c.endereco}</p>
             </div>
+
             <button
               onClick={() => excluirCliente(c.id)}
               className="text-red-500 hover:text-red-700"
